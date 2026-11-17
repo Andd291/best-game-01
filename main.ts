@@ -4,7 +4,7 @@
 // /output/dossier.json with buildDossier from vendor/makefun-game.ts.
 // Node 22, standard library only, no network, fully deterministic:
 // two runs write the same bytes.
-import { cpSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildDossier } from './vendor/makefun-game.ts';
@@ -12,9 +12,9 @@ import { buildDossier } from './vendor/makefun-game.ts';
 const root = dirname(fileURLToPath(import.meta.url));
 const out = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
 
-// Start from an empty output directory so a stale file can never
-// survive from an earlier run.
-rmSync(out, { recursive: true, force: true });
+// The grader hands us an empty output directory, and it is mounted
+// so its parent is not writable by the grader's user: never remove
+// the output directory itself, only write into it.
 mkdirSync(out, { recursive: true });
 
 // The game itself and its screenshots, exactly as they sit in the repo.
